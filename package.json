@@ -1,9 +1,9 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "anton-carlsson-portfolio",
   "private": true,
   "description": "A simple starter to get up and developing quickly with Gatsby",
   "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Anton Carlsson <mail@antoncarlsson.se>",
   "dependencies": {
     "@chakra-ui/core": "^0.2.8",
     "@emotion/core": "^10.0.17",
@@ -16,11 +16,12 @@
     "gatsby-plugin-react-helmet": "^3.1.7",
     "gatsby-plugin-sharp": "^2.2.21",
     "gatsby-source-filesystem": "^2.1.22",
-    "gatsby-transformer-sharp": "^2.2.14",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-helmet": "^5.2.1"
+    "react-helmet": "^5.2.1",
+    "typeface-lato": "0.0.75",
+    "typeface-montserrat": "0.0.75"
   },
   "devDependencies": {
     "eslint": "^6.1.0",

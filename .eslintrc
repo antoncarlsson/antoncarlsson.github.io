@@ -20,20 +20,6 @@
         "next": ["const", "let", "var"]
       }
     ],
-    "import/order": [
-      "error",
-      { "newlines-between": "always" },
-      {
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index"
-        ]
-      }
-    ],
     "max-len": ["error", { "code": 80 }],
     "prefer-promise-reject-errors": ["off"],
     "react/jsx-filename-extension": ["off"],
