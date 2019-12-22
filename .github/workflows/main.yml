@@ -11,6 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Deploy Sapper to GitHub Pages
-        uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v1.1.2
+        uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v1.1.3
         with:
           access-token: ${{ secrets.ACCESS_TOKEN }}
