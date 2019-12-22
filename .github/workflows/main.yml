@@ -13,6 +13,6 @@ jobs:
         uses: actions/checkout@master
         
       - name: Deploy Sapper to GitHub Pages
-        uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v0.1.0
+        uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v1
         with:
           access-token: ${{ secrets.ACCESS_TOKEN }}
