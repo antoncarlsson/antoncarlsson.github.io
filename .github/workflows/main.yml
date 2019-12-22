@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v1
+      - uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v0.1.0
         with:
           access-token: ${{ secrets.ACCESS_TOKEN }}
