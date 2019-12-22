@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v1
         
       - name: Deploy Sapper to GitHub Pages
-        uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v1
+        uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v1.1.0
         with:
           access-token: ${{ secrets.ACCESS_TOKEN }}
