@@ -1,33 +1,21 @@
 {
-  "extends": [
-    "airbnb",
-    "airbnb/hooks",
-    "prettier",
-    "prettier/react",
-    "plugin:import/errors",
-    "plugin:import/warnings"
-  ],
-  "plugins": ["prettier", "import"],
-  "rules": {
-    "prettier/prettier": ["error"],
-    "padding-line-between-statements": [
-      "error",
-      { "blankLine": "always", "prev": "*", "next": "return" },
-      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
-      {
-        "blankLine": "any",
-        "prev": ["const", "let", "var"],
-        "next": ["const", "let", "var"]
-      }
-    ],
-    "max-len": ["error", { "code": 80 }],
-    "prefer-promise-reject-errors": ["off"],
-    "react/jsx-filename-extension": ["off"],
-    "react/prop-types": ["warn"],
-    "no-return-assign": ["off"]
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module"
   },
   "env": {
-    "browser": true,
-    "jest": true
-  }
+    "es6": true,
+    "browser": true
+  },
+  "plugins": ["svelte3", "prettier"],
+  "overrides": [
+    {
+      "files": ["**/*.svelte"],
+      "processor": "svelte3/svelte3"
+    }
+  ],
+  "rules": {
+    "prettier/prettier": ["error"]
+  },
+  "extends": ["prettier"]
 }
