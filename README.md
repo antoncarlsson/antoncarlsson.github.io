@@ -1,3 +1,3 @@
-# My personal web page
+# My portfolio (WIP)
 
-Soon-to-be my personal web page. WIP.
+Soon-to-be my personal portfolio.
