@@ -6,13 +6,11 @@ on:
       - develop
 
 jobs:
-  build-and-deploy:
+  export-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-        
+      - uses: actions/checkout@v2
       - name: Deploy Sapper to GitHub Pages
-        uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v1.1.0
+        uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v1.1.1
         with:
           access-token: ${{ secrets.ACCESS_TOKEN }}
