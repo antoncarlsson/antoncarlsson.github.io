@@ -1,0 +1,10 @@
+{
+  "extends": "@workspace/config/typescript/react",
+  "compilerOptions": {
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "*.ts", "tests"]
+}

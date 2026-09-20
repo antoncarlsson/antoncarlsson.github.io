@@ -1,0 +1,11 @@
+@import '@workspace/ui/styles/globals.css';
+@source "./";
+@source "../../../packages/ui/src";
+
+body {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+::selection {
+  background: #dce8c7;
+  color: #20231f;
+}

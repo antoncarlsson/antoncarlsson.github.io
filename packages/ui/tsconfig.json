@@ -1,0 +1,4 @@
+{
+  "extends": "@workspace/config/typescript/react",
+  "include": ["src"]
+}

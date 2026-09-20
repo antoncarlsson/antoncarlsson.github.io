@@ -1,0 +1,35 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "passThroughEnv": [
+        "APP_ORIGIN",
+        "VITE_APP_NAME",
+        "LOG_LEVEL",
+        "OTEL_SERVICE_NAME",
+        "OTEL_EXPORTER_OTLP_ENDPOINT",
+        "OTEL_EXPORTER_OTLP_HEADERS"
+      ]
+    },
+    "build": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/packages/ui/src/**",
+        "$TURBO_ROOT$/packages/ui/package.json",
+        ".env*"
+      ],
+      "outputs": [".output/**", ".vercel/output/**"],
+      "env": ["VITE_APP_NAME", "VERCEL", "NITRO_PRESET"],
+      "passThroughEnv": ["CI"]
+    },
+    "typecheck": {
+      "cache": false
+    },
+    "test": {
+      "cache": false
+    }
+  },
+  "globalDependencies": ["packages/config/**"]
+}

@@ -1,0 +1,17 @@
+node_modules/
+.pnpm-store/
+.turbo/
+.output/
+.vercel/
+.tanstack/
+dist/
+coverage/
+playwright-report/
+test-results/
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+.DS_Store
+output/playwright/
+.playwright-cli/
