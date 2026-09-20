@@ -1,7 +1,7 @@
 ---
 title: Your first project
 description: Replace this unpublished example with a project you want to share.
-draft: true
+draft: false
 featured: true
 technologies: [React, TypeScript]
 ---

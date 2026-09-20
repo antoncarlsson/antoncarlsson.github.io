@@ -2,7 +2,7 @@
 title: A first Markdown note
 description: An unpublished example of a note with code, headings, and a table.
 date: '2026-09-20'
-draft: true
+draft: false
 ---
 
 ## A small beginning
