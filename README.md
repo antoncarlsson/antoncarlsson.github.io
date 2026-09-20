@@ -71,6 +71,10 @@ for example `/blog/a-small-discovery/`, rather than `.md` filenames. Heading anc
 
 ## Verify
 
+Husky installs a pre-push hook during `pnpm install`. Every push runs lint, tests, and a
+production build; a failing command stops the push. Run `pnpm run prepare` to reinstall the hook
+in an existing checkout.
+
 ```sh
 pnpm format
 pnpm check
