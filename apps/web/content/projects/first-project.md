@@ -13,5 +13,3 @@ Describe the problem, your approach, and what you learned. Add optional `source`
 ## What I learned
 
 Keep the story specific to your own work.
-
-Draft marker: unpublished-project-example

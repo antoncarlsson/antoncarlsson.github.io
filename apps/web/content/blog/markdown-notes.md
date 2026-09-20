@@ -22,5 +22,3 @@ console.log(idea)
 | MDX      | Writing with interactive components |
 
 [Explore the projects](/projects/).
-
-Draft marker: unpublished-markdown-example
