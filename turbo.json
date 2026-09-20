@@ -20,8 +20,8 @@
         "$TURBO_ROOT$/packages/ui/package.json",
         ".env*"
       ],
-      "outputs": [".output/**", ".vercel/output/**"],
-      "env": ["VITE_APP_NAME", "VERCEL", "NITRO_PRESET"],
+      "outputs": [".output/**"],
+      "env": ["VITE_APP_NAME"],
       "passThroughEnv": ["CI"]
     },
     "typecheck": {

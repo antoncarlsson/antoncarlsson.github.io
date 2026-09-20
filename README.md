@@ -1,147 +1,109 @@
-# AWesome Template
+# Anton Carlsson · Personal notebook
 
-A small, opinionated foundation for TypeScript web applications built by people and coding
-agents. The base runs without accounts, Docker, a database, or authentication. It includes a
-working feature that shows the intended path from form to validated server function to
-independent domain service.
+A personal portfolio and blog at **https://antoncarlsson.github.io/**. Built with React,
+TanStack Start/Router, TanStack Markdown, TanStack Highlight, MDX, Tailwind, and the shared UI
+package. GitHub Pages serves prerendered HTML; no application server is deployed.
 
-## Use this template
+## Develop and preview
 
-On [GitHub](https://github.com/AgileWork-sweden/awesome-template), click **Use this template**
-and select **Create a new repository**. Choose an owner, name, and visibility, then click
-**Create repository from template**. Your new repository starts with these files and its own
-commit history. See [GitHub's guide](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) for details.
-
-## Quick start
-
-Install [Node.js](https://nodejs.org/) **24.21.0** (see `.node-version`) and
-[pnpm](https://pnpm.io/installation) **12.4.2** (see `package.json#packageManager`). Then:
+Use Node **24.21.0** (`.node-version`) and pnpm **12.4.2** (`packageManager`), then:
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Open <http://127.0.0.1:3000>. The example form is at
-<http://127.0.0.1:3000/examples/project-preview>. No environment file is needed.
-If a local setting is needed, copy `apps/web/.env.example` to `apps/web/.env.local` and edit it.
-The local file is ignored by Git. Never put a secret in a `VITE_` variable.
+Visit http://127.0.0.1:3000. Drafts appear locally with a draft label. To preview the exact
+published site, run `pnpm build` followed by `pnpm start`. This preview serves static files,
+including real 404 responses, and excludes drafts.
 
-## Logging and telemetry
+## Make it yours
 
-The server writes structured Pino JSON logs to stdout at `info` level. Completed requests include
-a generated `request_id`, method, status, and duration; the response has the same
-`X-Request-ID` header. Logs made inside a request also include active trace and span IDs when
-tracing is enabled. Unexpected failures receive a safe reference ID; raw errors, request bodies,
-query strings, cookies, and credentials are not logged.
+Edit `apps/web/src/config/site.ts` for your name, introduction, biography, site URL, and optional
+links. Edit the About route for additional sections. No résumé, employer, contact address,
+or external profile is assumed. The initial public collections are intentionally empty.
 
-Set `LOG_LEVEL` to change verbosity and `OTEL_SERVICE_NAME` to name the service. To export
-logs, metrics, and traces, set `OTEL_EXPORTER_OTLP_ENDPOINT` to an OTLP/HTTP receiver base URL
-(for example `http://localhost:4318`). The app sends protobuf to `/v1/logs`,
-`/v1/metrics`, and `/v1/traces`. Standard `OTEL_EXPORTER_OTLP_HEADERS` supplies credentials
-when needed. These are server-only runtime values. An OpenTelemetry Collector is optional and
-is not needed for local development. If your log platform also ingests stdout, disable one
-ingestion path to avoid duplicate stored logs.
+## Write a post or project
 
-On a long-running Node server, metrics export periodically and telemetry flushes on shutdown.
-On Vercel Functions, telemetry gets a bounded flush after each invocation. Export failures do
-not fail requests, but a slow or unavailable receiver can cause dropped telemetry. See
-[operations](docs/operations.md) for deployment and investigation guidance.
+Add a lowercase, hyphenated `.md` or `.mdx` file to `apps/web/content/blog/` or
+`apps/web/content/projects/`. Its filename becomes the URL slug. Do not use the same slug for
+both formats in one collection. Every file starts with YAML frontmatter:
 
-## Commands
-
-| Command                             | Purpose                                                |
-| ----------------------------------- | ------------------------------------------------------ |
-| `pnpm dev`                          | Start the web app in development                       |
-| `pnpm format` / `pnpm format:check` | Apply/check Oxfmt formatting                           |
-| `pnpm lint` / `pnpm lint:fix`       | Type-aware Oxlint and architecture checks              |
-| `pnpm typecheck`                    | Strict TypeScript checks                               |
-| `pnpm test`                         | Vitest unit and boundary tests                         |
-| `pnpm check`                        | Format, lint, types, and Vitest                        |
-| `pnpm build` / `pnpm start`         | Build/start the production Node server                 |
-| `pnpm test:e2e`                     | Build and run Playwright against the production server |
-
-For browser tests, first run `pnpm --filter @workspace/web exec playwright install chromium`.
-On Linux, Playwright may also require system dependencies; CI installs them automatically.
-`pnpm start` uses port 3000 by default; set `HOST` and `PORT` for a deployment.
-
-## Deploy to Vercel
-
-The web app uses Nitro to build for Vercel Functions. To deploy from Git:
-
-1. Push the repository to GitHub, GitLab, or Bitbucket and import it as a new Vercel project.
-2. Set the project **Root Directory** to `apps/web`. Keep **Include source files outside of
-   the Root Directory in the Build Step** enabled so Vercel can install the pnpm workspace and
-   compile `packages/ui`. The included `apps/web/vercel.json` selects the **TanStack Start**
-   framework preset. Use its detected build and output settings.
-3. Select **Node.js 24.x** in Build and Deployment settings. Add
-   `ENABLE_EXPERIMENTAL_COREPACK=1` in Environment Variables so Vercel uses the repository's
-   pinned pnpm 12 version instead of its default pnpm version. Enable **Automatically expose
-   System Environment Variables** so Nitro detects Vercel during the build. If that setting
-   must remain disabled, set `NITRO_PRESET=vercel` for Production and Preview instead.
-4. Add any app settings in Vercel Environment Variables for the environments that need them.
-   `VITE_APP_NAME` is optional and public: Vite includes `VITE_` values in browser code.
-   Keep secrets in unprefixed server variables. Set `APP_ORIGIN` only when it exactly matches
-   that environment's public HTTPS origin, without a trailing slash. Leave it unset for
-   preview deployments with changing URLs so server functions use the request origin.
-5. Deploy and check `/api/health` and the example form at `/examples/project-preview` on
-   the generated URL. Subsequent pushes to the production branch deploy to production; pull
-   requests get preview deployments.
-
-For a manual deployment, link the monorepo from its repository root with `npx vercel link --repo`,
-then run `npx vercel` for a preview or `npx vercel --prod` for production. Use the same Vercel
-project settings above. See [Vercel's TanStack Start guide](https://vercel.com/kb/guide/deploy-a-tanstack-start-app-to-vercel)
-and [monorepo guidance](https://vercel.com/docs/monorepos/monorepo-faq).
-
-## Where code goes
-
-```text
-apps/web/                 Deployable TanStack Start application
-  src/routes/             URL routes, page composition, HTTP endpoints
-  src/features/           Product features: schema, service, server function, UI, tests
-  src/server/             Application server infrastructure
-  tests/e2e/              Production browser and HTTP tests
-packages/ui/              Shared shadcn-style presentation primitives
-packages/config/          Shared TypeScript configuration
-.agents/skills/           Agent workflows and optional capability instructions
-docs/                     Architecture, conventions, and operations
+```yaml
+---
+title: A small discovery
+description: A short summary for lists, social previews, and RSS.
+date: '2026-09-20'
+draft: true
+---
 ```
 
-React, TanStack Router/Start/Form, Tailwind CSS, shadcn-style primitives, Zod, Vitest,
-Playwright, pnpm workspaces, Turborepo, Oxlint, and Oxfmt are already configured.
-Use server functions for internal app calls and server routes for external HTTP endpoints.
-The server boundary validates input and delegates business rules to plain TypeScript services.
-Add TanStack Query when a feature actually needs shared server-state caching.
+Posts require a valid `YYYY-MM-DD` date. Projects do not need a date and may add:
 
-Read [architecture](docs/architecture.md) for dependency direction,
-[conventions](docs/conventions.md) for code placement, and [operations](docs/operations.md)
-for environment and deployment notes. `AGENTS.md` gives coding agents the frequent rules.
+```yaml
+technologies: [TypeScript, React]
+featured: true
+source: https://github.com/your-account/your-project
+demo: https://your-project.example.com
+```
 
-## Bootstrap with an agent
+`title` and `description` are required; `draft` defaults to `true`. Change it to `false`,
+preview, and merge to `main` to publish. Dates control ordering, not scheduled publication.
+The manifest drives page imports, prerender paths, lists, the sitemap, and RSS. Invalid metadata
+or duplicate slugs fail the build. Drafts are excluded before imports are generated, including
+from JavaScript bundles. Files committed to a public repository remain readable on GitHub even
+when they are drafts.
 
-Give your agent the product requirements and point it at
-[bootstrap-application](.agents/skills/bootstrap-application/SKILL.md). For example:
+Markdown uses TanStack Markdown. MDX uses `@mdx-js/rollup` so you can mix Markdown with React.
+Both use TanStack Highlight for fenced code. Register additional languages in
+`src/features/content/highlight.ts`. Unknown languages remain readable plain text. The Markdown
+parser deliberately supports a narrower syntax profile than full CommonMark/GFM; use MDX when
+its compiler ecosystem is needed.
 
-> Read `.agents/skills/bootstrap-application/SKILL.md` and turn this template into an
-> internal project tracker. Users are provisioned by an operator; public registration is
-> disabled. Projects and tasks need durable storage, and each user may edit only their own
-> projects. Implement one complete journey and verify it.
+MDX includes `<Callout>Helpful context.</Callout>` and `<Counter />` examples. Add reusable
+components to the MDX component map or import your own. Only trusted repository authors should
+write MDX: it compiles to executable JavaScript. Components must render without browser globals
+at build time; browser-only behavior belongs in effects or event handlers.
 
-The bootstrap skill selects a landing-page, web-app, or SaaS profile. It composes the
-[database](.agents/skills/add-database/SKILL.md) and
-[authentication](.agents/skills/add-authentication/SKILL.md) capabilities only when needed.
-Use [add-feature](.agents/skills/add-feature/SKILL.md) for subsequent product work,
-[review-code](.agents/skills/review-code/SKILL.md) before merging, and
-[verify-application](.agents/skills/verify-application/SKILL.md) for release checks.
-See [agent workflows](docs/agent-workflows.md) for how the skills fit together.
+Use `/images/filename.webp` URLs for images stored in `apps/web/public/images/`, supply useful
+alt text, and resize images before committing them. Internal links use published URL paths,
+for example `/blog/a-small-discovery/`, rather than `.md` filenames. Heading anchors are automatic.
 
-## Maintenance and release
+## Verify
 
-GitHub Actions will run quality and production browser checks on pushes and pull requests.
-A separate weekly audit checks the locked dependency tree. Application dependency changes
-are reviewed manually because GitHub currently documents Dependabot pnpm support only through
-v10; Dependabot still proposes GitHub Actions updates. See
-[maintaining the template](docs/maintaining-template.md) for updates and release checks.
+```sh
+pnpm format
+pnpm check
+pnpm build
+pnpm --filter @workspace/web exec playwright install chromium
+pnpm test:e2e
+```
 
-Before publishing a project created from this template, review license attribution, replace
-the sample copy, and decide whether to keep the example feature.
+E2E tests use two static servers: the actual site on port 4173 and isolated published fixtures on 4174. Fixture builds go into `.output-fixtures` and are never uploaded to Pages. Tests cover
+navigation, no-JavaScript HTML, deep links, MDX hydration, highlighting, drafts, metadata, feeds,
+mobile layout, and 404s. The build audits the static artifact for draft markers and source files.
+
+## Publish to GitHub Pages
+
+The verified remote is `antoncarlsson/antoncarlsson.github.io`; it is a user site with base `/`.
+In **Settings → Pages → Build and deployment → Source**, select **GitHub Actions**. A private
+repository requires a GitHub plan that supports private-repository Pages. Do not change repository
+visibility just to bypass a plan restriction. The published website itself is intended to be public.
+
+The CI workflow checks, builds, tests, and uploads `apps/web/.output/public`; a dependent job
+publishes that same artifact after successful pushes to `main`. Pull requests never publish.
+Use **Actions → CI → Run workflow → main** for a manual redeploy. If environment approval is
+configured for `github-pages`, approve the deployment in GitHub.
+
+After the first release, visit https://antoncarlsson.github.io/ and verify Projects, Writing,
+About, `/rss.xml`, `/sitemap.xml`, and an unknown URL. There is no custom domain to configure.
+See [operations](docs/operations.md) for troubleshooting and rollback, and
+[product decisions](docs/product.md) for the intended scope.
+
+The codebase began with AWesome Template. Its reusable packages and optional capability skills
+remain available; see [architecture](docs/architecture.md) and [conventions](docs/conventions.md).
+
+Until Pages is enabled, CI still runs all checks and skips artifact upload/deployment with a
+notice. After upgrading the account, select GitHub Actions under Settings → Pages, push/merge
+this implementation to main if it is not there yet, and run the CI workflow on main. No
+additional repository variable or deployment secret is required.

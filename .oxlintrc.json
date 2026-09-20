@@ -1,7 +1,9 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "react", "react-hooks", "jsx-a11y", "import"],
-  "categories": { "correctness": "error" },
+  "categories": {
+    "correctness": "error"
+  },
   "rules": {
     "typescript/no-explicit-any": "error",
     "typescript/consistent-type-imports": "error",
@@ -16,6 +18,7 @@
     "**/.tanstack/**",
     "**/coverage/**",
     "**/playwright-report/**",
-    "**/test-results/**"
+    "**/test-results/**",
+    "**/.output-fixtures/**"
   ]
 }

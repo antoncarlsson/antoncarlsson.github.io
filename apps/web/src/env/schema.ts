@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const publicEnvSchema = z.object({
-  VITE_APP_NAME: z.string().trim().min(1).max(80).default('AWesome Template'),
+  VITE_APP_NAME: z.string().trim().min(1).max(80).default('Anton Carlsson'),
 })
 
 export function parseEnvironment<T>(schema: z.ZodType<T>, input: unknown): T {

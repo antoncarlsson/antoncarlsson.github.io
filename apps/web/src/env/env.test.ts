@@ -5,12 +5,12 @@ import { serverEnvSchema } from './server-schema.server'
 describe('environment boundaries', () => {
   it('starts without optional environment configuration', () => {
     expect(parseEnvironment(publicEnvSchema, {})).toEqual({
-      VITE_APP_NAME: 'AWesome Template',
+      VITE_APP_NAME: 'Anton Carlsson',
     })
     expect(parseEnvironment(serverEnvSchema, {})).toEqual({
       NODE_ENV: 'development',
       LOG_LEVEL: 'info',
-      OTEL_SERVICE_NAME: 'workspace-web',
+      OTEL_SERVICE_NAME: 'anton-portfolio',
     })
   })
 

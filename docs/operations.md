@@ -1,108 +1,78 @@
-# Local development and operations
+# Development, publishing, and operations
 
-## Base application
+## Toolchain and outputs
 
-Use Node from `.node-version` and pnpm from `package.json#packageManager`.
-`pnpm install` then `pnpm dev` starts the application at `http://127.0.0.1:3000`.
-No environment file, Docker, or external account is required. The development port is strict so
-another application does not silently move this app to a different port.
+Use Node 24.21.0 and pnpm 12.4.2. `pnpm dev` starts local development on port 3000, including
+drafts. `pnpm build` creates the production `.output/public` directory in `apps/web` plus build-time
+server code in `.output/server`. `pnpm start` serves only static output on port 3000; set `PORT`
+to change it. Do not deploy `.output/server` to GitHub Pages.
 
-`pnpm build` creates `apps/web/.output`. `pnpm start` starts its Node server.
-Set `HOST` and `PORT` in the process environment as needed. The build is a generic Node/Nitro
-deployment. Vercel is an additional deployment target; the repository's README documents its
-project settings and Git deployment workflow. Keep Node on its pinned supported LTS line in
-production. Serve HTTPS through your platform or reverse proxy.
+`pnpm test:e2e` builds the real site and isolated content fixtures, then tests their static
+outputs. `.output-fixtures` is disposable and never uploaded. Build failures must stop publishing;
+do not fall back to a client-only application shell when prerendering fails.
 
-## Environment
+## GitHub Pages setup
 
-Optional local settings live in `apps/web/.env.local`, based on `.env.example`. Node explicitly loads
-that file for development and production-start commands; platform environment values take precedence.
-Never commit local files or real credentials. `.env.example` uses public values and commented placeholders.
+Use the existing `antoncarlsson/antoncarlsson.github.io` repository. Select GitHub Actions as the
+Pages source under Settings → Pages. Private repositories require an eligible GitHub plan. If
+GitHub rejects Pages activation for the plan, upgrade the plan or explicitly decide whether to
+make the source repository public; automation must not change visibility on its own.
 
-`VITE_APP_NAME` is public and compiled into the browser bundle. All `VITE_` variables must be considered
-public; never prefix secrets that way. Only explicitly selected fields appear in the public environment
-object. `APP_ORIGIN`, when set, is an HTTP(S) origin without a trailing slash. It controls the allowed
-Origin/Referer for server-function CSRF checks where browser fetch metadata is unavailable.
-Configure trusted proxy routing so the request origin agrees with the public URL.
+The CI workflow uses pinned Actions revisions, a frozen package install, quality checks, a
+production build, a route-tree drift check, a separate fixture build, and browser tests before
+uploading the Pages artifact. The deployment job receives only `pages: write` and
+`id-token: write`, uses the `github-pages` environment, and serializes deployments. PRs validate
+without uploading or deploying. Manual workflow runs deploy only when run on `main`.
 
-Server environment parsing is lazy at request time, and reports invalid key names without values.
-Builds do not need production secrets. Optional capabilities extend the server schema and examples;
-shared packages receive their configuration instead of reading application environment themselves.
-Turbo passes declared development variables and hashes public build-time configuration. Update
-`turbo.json` when adding build inputs. Do not put credentials or `.env` files into CI artifacts/caches.
+The repository is a root user site: base `/`, canonical origin `https://antoncarlsson.github.io`.
+No CNAME or custom domain is needed. If migrating to a project site or custom domain later,
+review base paths, links, canonical metadata, feeds, and deployment configuration together.
 
-## Logging and telemetry
+## Initial deployment status
 
-Pino writes JSON to stdout even without an OTLP receiver. `LOG_LEVEL` defaults to `info`;
-`OTEL_SERVICE_NAME` defaults to `workspace-web`. Set `OTEL_EXPORTER_OTLP_ENDPOINT` to an
-HTTP(S) OTLP base URL to enable log, metric, and trace export. The exporters use the standard
-`OTEL_EXPORTER_OTLP_HEADERS` variable for authentication; treat it as a secret. Keep these
-variables server-only and provide the endpoint at runtime. The app does not start a Collector.
+On 2026-09-20, GitHub rejected Pages activation for this private repository with HTTP 422:
+“Your current plan does not support GitHub Pages for this repository.” Repository admin access
+is available. Deployment requires an eligible GitHub plan or an explicit decision to make the
+repository public. The implementation does not change repository visibility automatically.
 
-Use the response `X-Request-ID` to find the matching Pino records. When tracing is enabled,
-`trace_id` and `span_id` connect logs to the request span. Logs exclude raw errors and request
-data by default. The request metrics are `http.server.request.count` and
-`http.server.request.duration`, labeled by normalized method and status class. Do not add
-paths, user IDs, or other high-cardinality values as metric attributes.
+## Content release checklist
 
-Node processes export metrics every 60 seconds and flush on SIGTERM. Vercel Functions attempt
-to flush all three signals within one second at the end of each invocation. An unavailable
-receiver cannot fail an application request; telemetry can be lost after the deadline. Keep
-stdout ingestion available, and ensure only one of stdout or direct OTLP feeds a given log
-backend. Validate endpoint connectivity and credentials after deployment. Exercise a real
-Vercel invocation to confirm the host permits OTLP egress and retains the emitted signals.
+1. Edit the profile configuration and add Markdown/MDX content as described in README.
+2. Preview drafts using `pnpm dev`; set `draft: false` only for content ready to publish.
+3. Run `pnpm check` and `pnpm test:e2e`, and review the production preview.
+4. Merge/push to main. Inspect the CI and deployment jobs in Actions.
+5. Open the live page directly and refresh it; verify links, assets, metadata, and feeds.
 
-## Security and deployment responsibilities
+An empty site still produces a valid empty RSS feed and sitemap containing its public index pages.
+Drafts are excluded from HTML, feeds, sitemap, and browser imports. Repository visibility is a
+separate concern: GitHub can expose draft sources if the repository is public.
 
-Dynamic responses include nosniff, a referrer policy, framing restrictions, and a conservative permissions
-policy. The CSP restricts object embedding, base URLs, and framing; it is not a full script-injection
-defense. A strict script/style CSP needs tested SSR nonces. Apply HSTS only after confirming HTTPS and
-subdomain policy. Apply corresponding headers at the proxy for static assets and proxy-generated errors.
+## Troubleshooting and rollback
 
-Set request-body size limits and request/idle timeouts at the production proxy or platform. Use a small
-limit appropriate to ordinary JSON forms (for example 64 KiB) and separate explicit upload handling
-when added. The template does not claim that string-length validation bounds the whole HTTP body.
-Do not enable wildcard credentialed CORS. Webhooks need raw-body signature verification and replay
-protection instead of blanket browser CSRF checks.
+- Build fails: inspect metadata errors, duplicate slugs, malformed MDX, and prerender logs. MDX
+  components must be safe to render outside the browser.
+- Deployment fails: verify Pages source is GitHub Actions, plan eligibility, Actions permissions,
+  and `github-pages` environment rules. Authorize environment approval when configured.
+- Nested page 404: confirm the slug is published and its `path/index.html` exists in the uploaded
+  artifact. Unknown paths intentionally return the custom 404 with HTTP status 404.
+- Missing styles/images: verify absolute root paths and case-sensitive asset filenames.
+- New content missing locally: the content watcher restarts Vite when content files change;
+  restart `pnpm dev` manually if an editor’s save behavior bypasses the watcher.
+- Rollback: revert the offending commit on main; the normal checks and deployment republish
+  the prior content. Do not reset repository history.
 
-`/api/health` is liveness only and reveals no dependency credentials or versions. Do not turn it into an
-unauthenticated operational dashboard. Add readiness only when a deployment needs it.
-Unexpected feature failures log a reference and safe classification, not raw messages, stacks, cookies,
-authorization headers, or request bodies. Add a reviewed redacting logger when operational needs justify it.
+## Logging and security boundaries
 
-## When database support is added
+The existing Pino/OpenTelemetry infrastructure is retained for local Start requests and build-time
+prerendering with service name `anton-portfolio`. Optional server-only environment variables remain
+in `.env.example`. OTLP failure must remain nonfatal. No credentials are required to build the site.
 
-The database skill adds PostgreSQL Compose and `db:up`, `db:down`, `db:generate`, `db:migrate`,
-`db:studio`, and `test:integration` commands. Document the actual selected image/port and local URL.
-Bind to loopback, use a named volume, and preserve data on normal shutdown. Never reuse another
-application's database for tests. Tests use a dedicated disposable database and close their connections.
+GitHub Pages has no application process, runtime server functions, request logger, or OTLP export.
+The template’s dynamic response headers apply only to local/build-time server responses, not
+GitHub Pages. Do not claim production request telemetry or custom server headers on this host.
+GitHub handles HTTPS; use GitHub’s Pages settings to inspect certificate/HTTPS availability.
 
-Run generated, reviewed SQL migrations explicitly. Apply them to an empty test database in CI and
-verify repeat execution is safe. Do not modify old migrations, use schema push in production, or make
-each web replica race to migrate at startup. Use backups and expand/contract changes for deployments;
-destructive changes need explicit authorization. Keep TLS certificate verification enabled for hosted DBs.
-
-## When authentication is added
-
-Record registration and provisioning policy, session expiry, verification/recovery behavior, canonical
-URL, trusted origins, and provider choices in `docs/product.md`. Keep public registration disabled
-when not requested, including direct endpoint access. Use a documented operator provisioning command
-when needed, never seeded production passwords. Keep provider defaults for password hashing and CSRF.
-
-Validate a strong production secret and HTTPS URL. Verify HttpOnly/Secure/SameSite cookie behavior,
-server-side resource authorization, revocation, and expiry. Avoid cross-request session caches. For
-multiple replicas, configure durable rate limiting and trusted proxy headers. No organizations, roles,
-billing, or email provider is implied by adding basic authentication.
-
-Verify that Better Auth sees the actual client IP through a proxy you control. With Nitro, the
-provider may not resolve a client IP without explicitly configured trusted headers. Its fallback
-rate limiter can then group unrelated users by endpoint and return unexpected 429 responses.
-Only trust forwarded IP headers that your edge replaces; test distinct client IPs through the
-deployed proxy and keep production rate limiting enabled.
-
-## Dependency maintenance
-
-Use frozen lockfile installation in CI. Review packages requiring lifecycle scripts in `allowBuilds`;
-do not globally enable scripts. The normal release delay is 24 hours. For an urgent security patch,
-review the advisory and use a narrowly scoped, documented temporary exception, then remove it.
-Do not hide findings with blanket audit exclusions. Dependabot proposes changes; maintainers review them.
+Until Pages is enabled, CI still runs all checks and skips artifact upload/deployment with a
+notice. After upgrading the account, select GitHub Actions under Settings → Pages, push/merge
+this implementation to main if it is not there yet, and run the CI workflow on main. No
+additional repository variable or deployment secret is required.

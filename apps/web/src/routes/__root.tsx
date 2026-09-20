@@ -1,13 +1,21 @@
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
+import { SiteFooter } from '../components/site-footer'
 import { SiteHeader } from '../components/site-header'
 import { site } from '../config/site'
+import { highlightThemeCss } from '../features/content/highlight-theme'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
   head: () => ({
     links: [
       { rel: 'stylesheet', href: appCss },
+      {
+        rel: 'alternate',
+        type: 'application/rss+xml',
+        title: `${site.name} — Writing`,
+        href: '/rss.xml',
+      },
       { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
     ],
     meta: [
@@ -25,6 +33,7 @@ function RootDocument({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <style>{highlightThemeCss}</style>
       </head>
       <body>
         <a
@@ -35,6 +44,7 @@ function RootDocument({ children }: { children: ReactNode }) {
         </a>
         <SiteHeader />
         <main id="main-content">{children}</main>
+        <SiteFooter />
         <Scripts />
       </body>
     </html>

@@ -1,5 +1,23 @@
 # Architecture
 
+## Personal website deployment profile
+
+This application is a static portfolio and blog. TanStack Start/Nitro run locally and during
+build-time prerendering; GitHub Pages receives only `.output/public`. There are no deployed
+server functions, health endpoint, or application runtime. The server patterns below are retained
+for optional future capabilities, not requirements for static content.
+
+`features/content` owns metadata validation, a build-time manifest, rendering, and shared MDX
+components. Markdown uses TanStack Markdown; MDX uses the MDX compiler. Both use TanStack
+Highlight. The Vite plugin filters drafts before generating lazy content imports. Explicit
+prerender paths and discovery assets derive from the same manifest. The build-time file reader
+is prohibited from client imports. Routes load public, serializable metadata and render content
+from the browser-safe manifest without a server function.
+
+Production previews and E2E tests serve static files with genuine 404s. Isolated test fixtures
+build into `.output-fixtures`, separate from the deployed artifact. Pino and OTLP remain
+server-only development/build facilities; Pages has no application request telemetry.
+
 The template has one deployable application (`apps/web`) and two private, reusable packages:
 `@workspace/ui` and `@workspace/config`. Thin template, strong conventions.
 

@@ -1,5 +1,9 @@
 # Conventions
 
+For this static website, route loaders may directly read the browser-safe generated content
+manifest. Filesystem scanning and compilation stay in build-only modules. No server boundary
+is needed for public static content. Keep draft filtering before generated imports.
+
 ## Names and placement
 
 Place a feature's schema, service, server function, tests, and components together under
