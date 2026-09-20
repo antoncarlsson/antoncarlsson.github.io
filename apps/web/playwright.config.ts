@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
+
+const sitePort = process.env.E2E_SITE_PORT ?? '4173'
+const fixturePort = process.env.E2E_FIXTURE_PORT ?? '4174'
+
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
@@ -13,26 +17,26 @@ export default defineConfig({
     {
       name: 'production',
       testMatch: 'site.spec.ts',
-      use: { ...devices['Desktop Chrome'], baseURL: 'http://127.0.0.1:4173' },
+      use: { ...devices['Desktop Chrome'], baseURL: `http://127.0.0.1:${sitePort}` },
     },
     {
       name: 'content-fixtures',
       testMatch: 'content.spec.ts',
-      use: { ...devices['Desktop Chrome'], baseURL: 'http://127.0.0.1:4174' },
+      use: { ...devices['Desktop Chrome'], baseURL: `http://127.0.0.1:${fixturePort}` },
     },
   ],
   webServer: [
     {
       command: 'node scripts/serve-static.mjs .output/public',
-      url: 'http://127.0.0.1:4173',
+      url: `http://127.0.0.1:${sitePort}`,
       reuseExistingServer: false,
-      env: { PORT: '4173' },
+      env: { PORT: sitePort },
     },
     {
       command: 'node scripts/serve-static.mjs .output-fixtures/public',
-      url: 'http://127.0.0.1:4174',
+      url: `http://127.0.0.1:${fixturePort}`,
       reuseExistingServer: false,
-      env: { PORT: '4174' },
+      env: { PORT: fixturePort },
     },
   ],
 })

@@ -71,9 +71,10 @@ for example `/blog/a-small-discovery/`, rather than `.md` filenames. Heading anc
 
 ## Verify
 
-Husky installs a pre-push hook during `pnpm install`. Every push runs lint, tests, and a
-production build; a failing command stops the push. Run `pnpm run prepare` to reinstall the hook
-in an existing checkout.
+Husky installs a pre-push hook during `pnpm install`. Every push runs formatting, lint, type,
+unit and integration checks, then builds the site and runs the browser tests; a failing command
+stops the push. Install Chromium with the command below before your first push. Run
+`pnpm run prepare` to reinstall the hook in an existing checkout.
 
 ```sh
 pnpm format
@@ -85,7 +86,9 @@ pnpm test:e2e
 
 E2E tests use two static servers: the actual site on port 4173 and isolated published fixtures on 4174. Fixture builds go into `.output-fixtures` and are never uploaded to Pages. Tests cover
 navigation, no-JavaScript HTML, deep links, MDX hydration, highlighting, drafts, metadata, feeds,
-mobile layout, and 404s. The build audits the static artifact for draft markers and source files.
+mobile layout, and 404s. Production tests do not depend on individual posts or projects; the
+fixture tests cover content behavior. The build audits the static artifact for draft markers and
+source files.
 
 ## Publish to GitHub Pages
 
